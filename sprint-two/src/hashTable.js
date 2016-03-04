@@ -14,12 +14,21 @@ HashTable.prototype.insert = function(k, v) {
   } else {
     var bucket = this._storage.get(index);
   }
-  for (var i = 1; i < bucket.get(0); i += 2) {
-    if (bucket.get(i) === k) {
-      bucket.set(i + 1, v);
-      return;
-    }
-  }
+
+  bucket.each(function(item, index, arr) {
+    if (item === k && (index + 1) % 2 === 0) {
+      arr[index + 1] = v;
+    } 
+  });
+
+
+  // for (var i = 1; i < bucket.get(0); i += 2) {
+  //   if (bucket.get(i) === k) {
+  //     bucket.set(i + 1, v);
+  //     return;
+  //   }
+  // }
+
   var subIndex = bucket.get(0);
   bucket.set(subIndex, k);
   bucket.set(subIndex + 1, v);
