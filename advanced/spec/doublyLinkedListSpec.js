@@ -2,7 +2,7 @@ describe('doublyLinkedList', function() {
   var doublyLinkedList;
 
   beforeEach(function() {
-    doublyLinkedList = DoublyLinkedList();
+    doublyLinkedList = new DoublyLinkedList();
   });
 
   it('should have a head and tail', function() {
@@ -59,7 +59,7 @@ describe('doublyLinkedList', function() {
     doublyLinkedList.addToHead(4);
     expect(doublyLinkedList.head.value).to.equal(4);
   });
-  
+
   it('should return the value of the former tail when removeTail is called', function() {
     doublyLinkedList.addToTail(4);
     doublyLinkedList.addToHead(5);
