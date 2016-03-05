@@ -29,32 +29,38 @@ HashTable.prototype.insert = function(k, v) {
   bucket.set(insertIndex, k);
   bucket.set(insertIndex + 1, v);
   bucket.set(0, subIndex + 2);
-   
+
 };
 
 HashTable.prototype.retrieve = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
   var bucket = this._storage.get(index);
-  for (var i = 1; i < bucket.get(0); i += 2) {
-    if (bucket.get(i) === k) {
-      return bucket.get(i + 1);
-    }
-  }
+  var result;
+
+  bucket.each(function(item, index, arr) {
+    if (item === k && (index + 1) % 2 === 0) {
+      result = arr[index + 1];
+    } 
+  });
+  return result;
 };
 
 HashTable.prototype.remove = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
   var bucket = this._storage.get(index);
-  for (var i = 1; i < bucket.get(0); i += 2) {
-    if (bucket.get(i) === k) {
-      for (var j = i + 2; j < bucket.get(0); j++) {
-        bucket.set(j - 2, bucket.get(j));
+  var subLength = bucket.get(0);
+  
+  bucket.each(function(item, index, arr) {
+    if (item === k && (index + 1) % 2 === 0) {
+      for (var i = index + 2; i < arr[0]; i++) {
+        arr[i - 2] = arr[i];
       }
-      bucket.set(bucket.get(0), undefined);
-      bucket.set(bucket.get(0) + 1, undefined);
-      bucket.set(0, bucket.get(0) - 2);
-    }
-  }
+      arr[subLength - 1] = undefined;
+      arr[subLength - 2] = undefined;
+      arr[0] = subLength - 2;
+    } 
+  });  
+
 };
 
 
