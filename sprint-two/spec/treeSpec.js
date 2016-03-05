@@ -25,12 +25,12 @@ describe('tree', function() {
   }); 
 
   it('should separate a parent tree from a child tree', function() {
-    tree.add.child(2);
-    tree.add.child(3);
+    tree.addChild(2);
+    tree.addChild(3);
     tree.children[0].addChild(7);
     var subTree = tree.children[0].removeFromParent();
     expect(subTree.value).to.equal(2);
-    expect(subTree.children[0]).to.equal(7);
+    expect(subTree.children[0].value).to.equal(7);
     expect(tree.children[0].value).to.equal(3);
   });
 
