@@ -3,6 +3,7 @@
 var HashTable = function() {
   this._limit = 8;
   this._storage = LimitedArray(this._limit);
+  this._items = 0;
 };
 
 HashTable.prototype.insert = function(k, v) {
@@ -30,6 +31,8 @@ HashTable.prototype.insert = function(k, v) {
   bucket.set(insertIndex + 1, v);
   bucket.set(0, subIndex + 2);
 
+  this._items++;
+  this._checkToDouble();
 };
 
 HashTable.prototype.retrieve = function(k) {
@@ -60,6 +63,61 @@ HashTable.prototype.remove = function(k) {
       arr[0] = subLength - 2;
     } 
   });  
+
+  this._items--;
+  this._checkToHalve();
+};
+
+HashTable.prototype._checkToDouble = function () {
+  if (this._items >= (this._limit * .75)) {
+    this._doubleStorageSize();
+  }
+};
+
+HashTable.prototype._checkToHalve = function () {
+  if (this._items <= (this._limit * .25)) {
+    this._halveStorageSize();
+  }
+};
+
+HashTable.prototype._doubleStorageSize = function() {
+  var oldStorage = this._storage;
+  this._limit = this._limit * 2;
+  this._storage = LimitedArray(this._limit);
+  this._items = 0;
+
+  oldStorage.each(function(item, index, storage) {
+    console.log(this);
+    if (typeof item !== 'undefined') {
+      item.each(function(element, i, arr) {
+        console.log(this);
+        if ((i + 1) % 2 === 0) {
+          this.insert(element, arr[i + 1]);
+        }
+      }.bind(this));
+    }
+  }.bind(this));
+
+};
+
+HashTable.prototype._halveStorageSize = function() {
+  var oldStorage = this._storage;
+  this._limit = this._limit / 2;
+
+  this._storage = LimitedArray(this._limit);
+  this._items = 0;
+  
+  oldStorage.each(function(item, index, storage) {
+    console.log(this);
+    if (typeof item !== 'undefined') {
+      item.each(function(element, i, arr) {
+        console.log(this);
+        if ((i + 1) % 2 === 0) {
+          this.insert(element, arr[i + 1]);
+        }
+      }.bind(this));
+    }
+  }.bind(this));
 
 };
 
